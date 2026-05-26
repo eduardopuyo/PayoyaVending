@@ -39,12 +39,17 @@ Este proyecto nace para resolver el reto de la **Asociación de Productores de l
 ├── docs/
 │   └── index.md            # Documentación técnica para GitHub Pages
 └── README.md               # Este archivo
+```
 
 ---
 
-## 📖 Documentación Completa
+## 🔗 Enlaces al Portafolio Técnico
 
-Accede a los manuales detallados y al análisis técnico del proyecto:
+Haz clic en los siguientes enlaces para consultar la documentación detallada:
 
-- [📄 Manual Técnico y de Usuario](./docs/index.md)
-- [📊 Análisis de Complejidad y Casos de Uso](./docs/index.md#análisis-técnico)
+* [ **Manuales de Usuario e Instalación**](./docs/index.md)
+* [ **Arquitectura y Diseño de Software**](./docs/index.md#arquitectura)
+* [ **Análisis de Complejidad y Pruebas**](./docs/index.md#pruebas)
+
+
+
