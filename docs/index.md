@@ -24,7 +24,7 @@ Bienvenido al centro de documentación del proyecto. Aquí encontrarás todos lo
 ### 1. Interfaz de Bienvenida
 Al iniciar la máquina, el terminal mostrará el catálogo actual de productos disponibles.
 
-> [!IMPORTANT]
+> [IMPORTANT!]
 > **Nota:** Si un producto aparece con la etiqueta `[AGOTADO]`, el sistema bloqueará su selección automáticamente para evitar transacciones fallidas.
 
 ---
