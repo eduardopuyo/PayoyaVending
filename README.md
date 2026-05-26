@@ -21,12 +21,6 @@ Este proyecto nace para resolver el reto de la **Asociación de Productores de l
 
 ---
 
-## 📑 Documentación Técnica
-- [Manual de Usuario e Instalación](./manuales.md)
-- [Arquitectura y Diseño](./arquitectura.md)
-
----
-
 ## 🛠️ Tecnologías Utilizadas
 
 - **Lenguaje:** Java 17
@@ -45,3 +39,12 @@ Este proyecto nace para resolver el reto de la **Asociación de Productores de l
 ├── docs/
 │   └── index.md            # Documentación técnica para GitHub Pages
 └── README.md               # Este archivo
+
+---
+
+## 📖 Documentación Completa
+
+Accede a los manuales detallados y al análisis técnico del proyecto:
+
+- [📄 Manual Técnico y de Usuario](./docs/index.md)
+- [📊 Análisis de Complejidad y Casos de Uso](./docs/index.md#análisis-técnico)
