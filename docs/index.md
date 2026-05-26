@@ -126,72 +126,51 @@ javac -d bin src/excepciones/Notificador.java src/model/*.java src/main/LaPayoya
 | **Error: Could not find or load main class** | Classpath incorrecto. | Ejecutar con: `java -cp bin main.LaPayoyaVending`. |
 
 ---
-
+<a name="arquitectura"></a>
 ## 🏗️ 3. Documentación de Diseño (Arquitectura)
-> **Análisis de la estructura de clases, herencia y principios de diseño utilizados en el sistema.**
+> **Análisis detallado de la estructura de clases, herencia y lógica de componentes del sistema.**
 
-### 🏗️ Documentación de Diseño y Arquitectura (Técnico)
-**Proyecto:** Sistema de Gestión de Vending "La Payoya Vending"  
-**Arquitectura:** Orientada a Objetos (POO) estructurada para consola (CLI) aplicando principios SOLID.
+### 3.1 Diagrama de Clases (UML)
+[cite_start]A continuación se presenta la estructura visual de las clases y sus relaciones fundamentales, destacando la jerarquía de productos y el desacoplamiento del sistema de pagos[cite: 49, 55]:
 
----
+![Diagrama UML La Payoya Vending](data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=)
+[cite_start]*(Nota: El diagrama ilustra cómo la clase abstracta Producto centraliza los atributos comunes para sus subclases [cite: 50, 77])*
 
-### 1. Organización del Código (Paquetes)
-El proyecto se organiza en tres paquetes bien delimitados en el directorio `src/` para garantizar la separación de responsabilidades:
+### 3.2 Organización del Proyecto (Paquetes)
+[cite_start]El sistema se organiza en tres paquetes lógicos para garantizar la separación de responsabilidades[cite: 61]:
 
-* **`excepciones`**: Alberga la interfaz funcional `Notificador.java` encargada de desacoplar el sistema de alertas críticas. *Nota: Según la estructura del proyecto, actúa como el contenedor de las herramientas de notificación y control de anomalías.*
-* **`model`**: Contiene el núcleo del modelo de negocio. Incluye la clase abstracta base `Producto.java`, las tres subclases de productos lácteos (`Queso.java`, `Leche.java`, `Nata.java`) y la clase independiente de gestión económica `Monedero.java`.
-* **`main`**: Contiene la clase controladora principal `LaPayoyaVending.java` que unifica los componentes y dirige el flujo de ejecución y la interfaz de usuario.
+* [cite_start]**`model`**: Contiene el núcleo de la lógica de negocio, incluyendo la clase abstracta `Producto`, las subclases (`Queso`, `Leche`, `Nata`) y la gestión de pagos en `Monedero`[cite: 74].
+* [cite_start]**`excepciones`**: Define el contrato de comunicación mediante la interfaz `Notificador` y gestiona las excepciones del sistema[cite: 63, 73].
+* [cite_start]**`main`**: Orquestador del flujo de ejecución que contiene la clase principal `LaPayoyaVending`[cite: 72, 75].
 
----
+### 3.3 Diseño de Clases y Herencia
+[cite_start]Se aplica una jerarquía basada en la clase abstracta **`Producto`**, que obliga a cada especialización a definir su propia lógica de inventario[cite: 50, 77].
 
-### 2. Jerarquía de Clases y Polimorfismo
-El sistema brinda soporte a la distribución de productos lácteos artesanales de la Sierra de Cádiz y Málaga abstrayendo el comportamiento común en una estructura jerárquica:
+#### **Detalle de Componentes Principales**
 
-* **Clase Base: Producto (Abstracta)**
-  Centraliza los atributos compartidos por todos los artículos y define el contrato obligatorio de comportamiento mediante encapsulamiento protegido (`protected`):
-  * **Atributos:** `nombre` (String), `precio` base (double) y la referencia de inyección de dependencias `notificador` (Notificador).
-  * **Contrato Polimórfico:** Define los métodos abstractos públicos `hayStock(int)` y `dispensar(int)`. Cada subclase computa de forma interna su inventario según su unidad de medida.
+| Clase | Modificador | Responsabilidad Clave |
+| :--- | :--- | :--- |
+| **`Producto`** | `abstract` | [cite_start]Define atributos protegidos (`nombre`, `precio`, `notificador`) y los métodos `hayStock()` y `dispensar()`[cite: 85, 86]. |
+| **`Queso`** | `public` | [cite_start]Gestiona el inventario por unidades discretas (cuñas de 250g)[cite: 21, 88]. |
+| **`Leche`** | `public` | [cite_start]Controla el stock en ml y ajusta el precio según el formato (500ml o 1L)[cite: 90, 91]. |
+| **`Nata`** | `public` | [cite_start]Controla el stock en ml para formatos de 100ml, 250ml y 500ml[cite: 93]. |
+| **`Monedero`** | `public` | [cite_start]Centraliza la lógica financiera: valida efectivo (0.50€ a 5€), simula tarjetas y calcula cambios[cite: 42, 95]. |
 
-* **Especializaciones del Catálogo:**
-  * **`Queso`**: Gestiona stock físico de forma discreta mediante un conteo de unidades enteras (`unidades` de cuñas de 250 g). Lanza avisos al supervisor en el momento exacto en que las existencias llegan a 0.
-  * **`Leche` y `Nata`**: Representan productos líquidos dispensados por volumen. Utilizan variables enteras en mililitros (`tanqueLecheml` y `tanqueNataml`) para monitorizar los depósitos y evitar pérdidas de precisión numéricas. Ambas implementan el método dinámico `getPrecio(int)` para tarifar según el volumen seleccionado y emiten alertas críticas en cuanto sus respectivos tanques bajan de los 2 Litros (2000 ml).
-    * **Formatos de Leche:** 500 ml o 1 L.
-    * **Formatos de Nata:** 100 ml, 250 ml o 500 ml.
+### 3.4 Patrones y Lógica de Interacción
+* [cite_start]**Patrón Callback / Inyección de Dependencias**: Los productos reciben una referencia a la interfaz **`Notificador`** en su constructor, desacoplando el mecanismo de aviso del modelo de negocio[cite: 79, 80].
+* [cite_start]**Uso de Expresiones Lambda**: En la clase `LaPayoyaVending`, la implementación de `Notificador` se resuelve mediante una lambda para simplificar el envío de mensajes a la consola[cite: 31, 81].
+* **Gestión de Stock Crítico**:
+    * [cite_start]**Productos Líquidos (Leche/Nata)**: El sistema dispara una alerta cuando el volumen es inferior a **2 litros**[cite: 91, 93].
+    * [cite_start]**Productos Sólidos (Queso)**: La notificación se emite cuando el stock se agota por completo (**0 unidades**)[cite: 88].
 
----
+### 3.5 Interfaz de Consola (CLI)
+[cite_start]La navegación utiliza un bucle interactivo que presenta avisos de stock bajo mediante el prefijo `[!]` antes de permitir la selección[cite: 40, 120].
 
-### 3. Principios y Patrones de Diseño Aplicados
-
-#### **A. Patrón Callback mediante Interfaces Funcionales (SOLID - Desacoplamiento)**
-En lugar de acoplar de forma rígida los productos al canal de salida, el sistema implementa la interfaz funcional **`Notificador`** con su único método abstracto `notificar(String)`. 
-* **Inyección en Constructor:** Cada subclase de `Producto` recibe la referencia del notificador en su construcción y la invoca ante un escenario de stock crítico. 
-* **Resolución Lambda:** La clase principal `LaPayoyaVending` resuelve esta interfaz mediante una **expresión lambda**, imprimiendo las alertas directamente en la consola sin necesidad de instanciar clases adicionales pesadas. Esto respeta el principio *Open/Closed* de SOLID.
-
-#### **B. Responsabilidad Única Financiera (Monedero)**
-La clase **`Monedero`** encapsula la totalidad de la lógica transaccional monetaria de forma aislada, facilitando cualquier cambio técnico futuro en los sistemas de cobro:
-* **Control del Efectivo:** El método `pagarConEfectivo(double)` restringe las monedas y billetes aceptados en el bucle de inserción, validando únicamente denominaciones específicas iguales o superiores a 0,50 EUR e inferiores o iguales a 5 EUR.
-* **Simulación de Tarjeta:** El método `pagarConTarjeta(double)` emula una pasarela bancaria externa que se encuentra autorizada por defecto en esta revisión de software.
-* **Gestión del Cambio:** El método `darCambio(double)` calcula y procesa la devolución de dinero tras un pago con monedas/billetes y realiza el reinicio automático del saldo acumulado (`saldoAcumulado = 0.0`).
-
----
-
-### 4. Ciclo de Vida y Flujo de una Transacción (Navegación CLI)
-La interacción ocurre íntegramente por consola de texto (E/S estándar) de forma secuencial y cíclica en un bucle principal `do-while` controlado por `LaPayoyaVending`:
-
-1. **Menú Principal:** Muestra el listado de opciones e imprime avisos informativos preventivos (`[!]`) en caso de detectar stock bajo en el sistema al iniciar el bloque.
-2. **Suboperación:** El usuario selecciona el artículo deseado (`[1] Queso`, `[2] Leche`, `[3] Nata`). Para los productos líquidos, se despliega una subpantalla para elegir el formato de volumen.
-3. **Proceso de Compra:** Se solicita el método de pago preferido.
-   * Si se elige **Tarjeta (`[T]`)**, se invoca `pagarConTarjeta(double)`.
-   * Si se elige **Efectivo (`[E]`)**, se abre el bucle interactivo de inserción de monedas y billetes.
-4. **Confirmación y Dispensado:** Tras validar el pago completo, el controlador ejecuta la reducción física de existencias, dispara el `Notificador` si se alcanzan los umbrales críticos de aviso al supervisor y ordena al `Monedero` despachar el cambio final.
-
-#### **Prefijos de Mensaje del Sistema**
-El software estandariza las salidas de texto mediante prefijos específicos para simplificar la auditoría técnica:
-* `[!]`: Aviso preventivo de stock bajo en el menú principal.
-* `[ALERTA SISTEMA]`: Notificación de stock crítico enviada de forma directa al supervisor.
-* `[MONEDERO]`: Validación de monedas ingresadas,
----
+| Prefijo de Mensaje | Significado |
+| :--- | :--- |
+| `[ALERTA SISTEMA]` | [cite_start]Notificación de stock crítico enviada al supervisor[cite: 120]. |
+| `[MONEDERO]` | [cite_start]Información sobre validación de monedas y saldo acumulado[cite: 120]. |
+| `[DISPENSADOR]` | [cite_start]Confirmación de que el producto ha sido entregado correctamente[cite: 120]. |
 
 <a name="pruebas"></a>
 ## 📊 4. Casos de Prueba y Complejidad
