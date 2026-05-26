@@ -131,46 +131,46 @@ javac -d bin src/excepciones/Notificador.java src/model/*.java src/main/LaPayoya
 > **Análisis detallado de la estructura de clases, herencia y lógica de componentes del sistema.**
 
 ### 3.1 Diagrama de Clases (UML)
-[cite_start]A continuación se presenta la estructura visual de las clases y sus relaciones fundamentales, destacando la jerarquía de productos y el desacoplamiento del sistema de pagos[cite: 49, 55]:
+A continuación se presenta la estructura visual de las clases y sus relaciones fundamentales, destacando la jerarquía de productos y el desacoplamiento del sistema de pagos:
 
 ![Diagrama UML La Payoya Vending](data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=)
-[cite_start]*(Nota: El diagrama ilustra cómo la clase abstracta Producto centraliza los atributos comunes para sus subclases [cite: 50, 77])*
+*(Nota: El diagrama ilustra cómo la clase abstracta Producto centraliza los atributos comunes para sus subclases)*
 
 ### 3.2 Organización del Proyecto (Paquetes)
-[cite_start]El sistema se organiza en tres paquetes lógicos para garantizar la separación de responsabilidades[cite: 61]:
+El sistema se organiza en tres paquetes lógicos para garantizar la separación de responsabilidades:
 
-* [cite_start]**`model`**: Contiene el núcleo de la lógica de negocio, incluyendo la clase abstracta `Producto`, las subclases (`Queso`, `Leche`, `Nata`) y la gestión de pagos en `Monedero`[cite: 74].
-* [cite_start]**`excepciones`**: Define el contrato de comunicación mediante la interfaz `Notificador` y gestiona las excepciones del sistema[cite: 63, 73].
-* [cite_start]**`main`**: Orquestador del flujo de ejecución que contiene la clase principal `LaPayoyaVending`[cite: 72, 75].
+* **`model`**: Contiene el núcleo de la lógica de negocio, incluyendo la clase abstracta `Producto`, las subclases (`Queso`, `Leche`, `Nata`) y la gestión de pagos en `Monedero`.
+* **`excepciones`**: Define el contrato de comunicación mediante la interfaz `Notificador` y gestiona las excepciones del sistema.
+* **`main`**: Orquestador del flujo de ejecución que contiene la clase principal `LaPayoyaVending`.
 
 ### 3.3 Diseño de Clases y Herencia
-[cite_start]Se aplica una jerarquía basada en la clase abstracta **`Producto`**, que obliga a cada especialización a definir su propia lógica de inventario[cite: 50, 77].
+Se aplica una jerarquía basada en la clase abstracta **`Producto`**, que obliga a cada especialización a definir su propia lógica de inventario.
 
 #### **Detalle de Componentes Principales**
 
 | Clase | Modificador | Responsabilidad Clave |
 | :--- | :--- | :--- |
-| **`Producto`** | `abstract` | [cite_start]Define atributos protegidos (`nombre`, `precio`, `notificador`) y los métodos `hayStock()` y `dispensar()`[cite: 85, 86]. |
-| **`Queso`** | `public` | [cite_start]Gestiona el inventario por unidades discretas (cuñas de 250g)[cite: 21, 88]. |
-| **`Leche`** | `public` | [cite_start]Controla el stock en ml y ajusta el precio según el formato (500ml o 1L)[cite: 90, 91]. |
-| **`Nata`** | `public` | [cite_start]Controla el stock en ml para formatos de 100ml, 250ml y 500ml[cite: 93]. |
-| **`Monedero`** | `public` | [cite_start]Centraliza la lógica financiera: valida efectivo (0.50€ a 5€), simula tarjetas y calcula cambios[cite: 42, 95]. |
+| **`Producto`** | `abstract` | Define atributos protegidos (`nombre`, `precio`, `notificador`) y los métodos `hayStock()` y `dispensar()`. |
+| **`Queso`** | `public` | Gestiona el inventario por unidades discretas (cuñas de 250g). |
+| **`Leche`** | `public` | Controla el stock en ml y ajusta el precio según el formato (500ml o 1L). |
+| **`Nata`** | `public` | Controla el stock en ml para formatos de 100ml, 250ml y 500ml. |
+| **`Monedero`** | `public` | Centraliza la lógica financiera: valida efectivo (0.50€ a 5€), simula tarjetas y calcula cambios. |
 
 ### 3.4 Patrones y Lógica de Interacción
-* [cite_start]**Patrón Callback / Inyección de Dependencias**: Los productos reciben una referencia a la interfaz **`Notificador`** en su constructor, desacoplando el mecanismo de aviso del modelo de negocio[cite: 79, 80].
-* [cite_start]**Uso de Expresiones Lambda**: En la clase `LaPayoyaVending`, la implementación de `Notificador` se resuelve mediante una lambda para simplificar el envío de mensajes a la consola[cite: 31, 81].
+* **Patrón Callback / Inyección de Dependencias**: Los productos reciben una referencia a la interfaz **`Notificador`** en su constructor, desacoplando el mecanismo de aviso del modelo de negocio.
+* **Uso de Expresiones Lambda**: En la clase `LaPayoyaVending`, la implementación de `Notificador` se resuelve mediante una lambda para simplificar el envío de mensajes a la consola.
 * **Gestión de Stock Crítico**:
-    * [cite_start]**Productos Líquidos (Leche/Nata)**: El sistema dispara una alerta cuando el volumen es inferior a **2 litros**[cite: 91, 93].
-    * [cite_start]**Productos Sólidos (Queso)**: La notificación se emite cuando el stock se agota por completo (**0 unidades**)[cite: 88].
+    * **Productos Líquidos (Leche/Nata)**: El sistema dispara una alerta cuando el volumen es inferior a **2 litros**.
+    * **Productos Sólidos (Queso)**: La notificación se emite cuando el stock se agota por completo (**0 unidades**).
 
 ### 3.5 Interfaz de Consola (CLI)
-[cite_start]La navegación utiliza un bucle interactivo que presenta avisos de stock bajo mediante el prefijo `[!]` antes de permitir la selección[cite: 40, 120].
+La navegación utiliza un bucle interactivo que presenta avisos de stock bajo mediante el prefijo `[!]` antes de permitir la selección.
 
 | Prefijo de Mensaje | Significado |
 | :--- | :--- |
-| `[ALERTA SISTEMA]` | [cite_start]Notificación de stock crítico enviada al supervisor[cite: 120]. |
-| `[MONEDERO]` | [cite_start]Información sobre validación de monedas y saldo acumulado[cite: 120]. |
-| `[DISPENSADOR]` | [cite_start]Confirmación de que el producto ha sido entregado correctamente[cite: 120]. |
+| `[ALERTA SISTEMA]` | Notificación de stock crítico enviada al supervisor. |
+| `[MONEDERO]` | Información sobre validación de monedas y saldo acumulado. |
+| `[DISPENSADOR]` | Confirmación de que el producto ha sido entregado correctamente. |
 
 <a name="pruebas"></a>
 ## 📊 4. Casos de Prueba y Complejidad
